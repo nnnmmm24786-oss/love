@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مكاننا السري 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        
+        body {
+            background: linear-gradient(135deg, #1f0015 0%, #0f0c29 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow-x: hidden; position: relative; padding: 20px 10px;
+        }
+
+        /* خلفية القلوب المتحركة */
+        .heart-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .floating-heart {
+            position: absolute; color: rgba(255, 77, 109, 0.4);
+            font-size: var(--size); left: var(--left);
+            animation: floatUp var(--duration) linear infinite; bottom: -50px;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: var(--opacity); }
+            90% { opacity: var(--opacity); }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+        
+        .glow-text {
+            background: linear-gradient(to left, #ff4d6d, #ffb3c1);
+            -webkit-background-clip: text; color: transparent;
+            text-shadow: 0 0 20px rgba(255, 77, 109, 0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #e01e37, #ff4d6d); color: white;
+            border: none; padding: 12px 25px; border-radius: 50px;
+            font-size: 16px; font-weight: 900; cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 77, 109, 0.4); transition: 0.3s;
+            width: 100%; display: block; margin-top: 10px;
+        }
+        .btn-primary:active { transform: scale(0.95); box-shadow: 0 2px 10px rgba(255, 77, 109, 0.6); }
+
+        #loginWrapper { width: 100%; max-width: 400px; text-align: center; z-index: 10; }
+        .login-card {
+            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 77, 109, 0.3); border-radius: 30px;
+            padding: 40px 25px; box-shadow: 0 0 30px rgba(255, 77, 109, 0.3);
+        }
+        
+        input[type="password"] {
+            width: 100%; padding: 15px; border: 2px solid rgba(255, 77, 109, 0.5);
+            background: rgba(0, 0, 0, 0.5); border-radius: 50px; color: #fff;
+            text-align: center; font-size: 18px; letter-spacing: 5px; margin: 15px 0; outline: none; transition: 0.3s;
+        }
+        input[type="password"]:focus { border-color: #ff4d6d; box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
+
+        .hint-text { font-size: 12px; color: #ffb3c1; margin-bottom: 15px; cursor: pointer; text-decoration: underline; opacity: 0.8; display: block; }
+        .emergency-btn { display: inline-block; font-size: 12px; color: #aaa; margin-top: 15px; text-decoration: none; transition: 0.3s; }
+        .emergency-btn:hover { color: #ff4d6d; }
+
+        #messageWrapper { display: none; width: 100%; max-width: 400px; text-align: center; z-index: 10; padding: 20px; }
+        #typingText { font-size: 20px; line-height: 1.8; min-height: 200px; color: #ffb3c1; font-weight: bold; text-shadow: 0 0 10px rgba(255,77,109,0.5); }
+        .cursor { display: inline-block; width: 3px; height: 20px; background: #ff4d6d; animation: blink 0.8s infinite; vertical-align: middle; margin-right: 2px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        #mainContent { display: none; width: 100%; max-width: 450px; z-index: 10; padding-top: 20px; padding-bottom: 50px; }
+        
+        .feature-card {
+            background: rgba(20, 10, 15, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 77, 109, 0.3); border-radius: 25px;
+            padding: 25px; margin-bottom: 25px; text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,77,109,0.1);
+            opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out;
+        }
+        .feature-card.show { opacity: 1; transform: translateY(0); }
+        .card-icon { font-size: 35px; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,77,109,0.5)); }
+        .card-title { font-size: 20px; font-weight: 900; margin-bottom: 10px; color: #ffb3c1; }
+
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .timer-box { background: rgba(255, 77, 109, 0.15); border: 1px dashed rgba(255, 77, 109, 0.5); border-radius: 15px; padding: 10px 0; }
+        .t-num { font-size: 24px; font-weight: 900; color: #fff; text-shadow: 0 0 10px #ff4d6d; }
+        .t-text { font-size: 11px; color: #ffb3c1; }
+
+        .love-meter-bg { width: 100%; height: 25px; background: rgba(0,0,0,0.6); border-radius: 50px; border: 1px solid #ff4d6d; margin: 15px 0; overflow: hidden; position: relative; }
+        .love-meter-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ff4d6d, #ff91a4); transition: 0.1s linear; }
+        #loveStatus { font-weight: bold; color: #ffb3c1; margin-bottom: 10px; font-size: 14px; min-height: 20px; }
+
+        .game-heart { font-size: 60px; cursor: pointer; display: inline-block; transition: 0.1s; user-select: none; }
+        .game-heart:active { transform: scale(1.3); }
+        
+        .fingerprint-btn { background: rgba(0,0,0,0.4); border: 2px solid #ff4d6d; width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 15px auto; cursor: pointer; position: relative; overflow: hidden; }
+        .fingerprint-btn::after { content: ''; position: absolute; width: 100%; height: 4px; background: #ffb3c1; top: 0; left: 0; animation: scanLine 2s linear infinite; display: none; }
+        .fingerprint-btn.scanning::after { display: block; }
+        @keyframes scanLine { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+
+        .wish-input { width: 100%; padding: 12px; border-radius: 15px; border: 1px solid rgba(255,77,109,0.5); background: rgba(0,0,0,0.4); color: white; text-align: center; font-size: 14px; outline: none; margin-bottom: 10px; }
+        
+        .wheel-container { position: relative; width: 180px; height: 180px; margin: 15px auto; border-radius: 50%; border: 5px solid #ff4d6d; overflow: hidden; transition: transform 3s cubic-bezier(0.1, 0.8, 0.3, 1); background: conic-gradient(#ff4d6d 0deg 90deg, #c9184a 90deg 180deg, #ff758f 180deg 270deg, #800e13 270deg 360deg); }
+        .wheel-pointer { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); font-size: 24px; z-index: 12; }
+
+        .sos-card { border: 2px solid #e01e37; background: rgba(30, 5, 10, 0.85); box-shadow: 0 0 25px rgba(224, 30, 55, 0.4); }
+        .btn-sos { background: linear-gradient(45deg, #bd0000, #e01e37); box-shadow: 0 5px 20px rgba(224, 30, 55, 0.5); font-size: 18px; letter-spacing: 1px; }
+        .btn-sos:active { background: #900000; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source id="audioSource" src="" type="audio/mpeg">
+    </audio>
+
+    <div class="heart-bg" id="heartBg"></div>
+
+    <div id="loginWrapper">
+        <div class="login-card">
+            <div id="lockEmoji" style="font-size: 50px; margin-bottom: 10px;">🔐</div>
+            <h1 class="glow-text" id="mainTitle" style="font-size: 28px; margin-bottom: 5px;">---</h1>
+            
+            <p id="welcomeTimeMsg" style="font-size: 13px; color: #ddd; margin-bottom: 10px;">---</p>
+            
+            <input type="password" id="passwordInput" inputmode="numeric" placeholder="الرقم السري هنا" oninput="handlePasswordTyping()">
+            
+            <span class="hint-text" onclick="showHint()">نسيتي الباسورد؟ اضغطي للتلميح السري 🧐</span>
+            
+            <button class="btn-primary" onclick="checkPassword()">دخول لعالمنا ✨</button>
+            <p id="errorMsg" id="errorMessageField" style="color: #ff4d4d; margin-top: 15px; font-size: 14px; font-weight: bold; display: none;">---</p>
+            
+            <br>
+            <a id="emergencyLink" href="#" target="_blank" class="emergency-btn">---</a>
+        </div>
+    </div>
+
+    <div id="messageWrapper">
+        <div id="typingText"></div>
+        <button class="btn-primary" id="skipBtn" onclick="skipToMain()" style="width: auto; margin: 30px auto 0; padding: 10px 30px; font-size: 14px; background: rgba(255,255,255,0.2); box-shadow: none; border: 1px solid rgba(255,255,255,0.4);">تخطي ⏭️</button>
+    </div>
+
+    <div id="mainContent">
+        
+        <div class="feature-card delay-1">
+            <div class="card-icon">👑</div>
+            <h2 class="card-title glow-text" id="card1_title">---</h2>
+            <p style="font-size: 13px; color: #ddd;" id="card1_desc">---</p>
+            <div class="timer-grid">
+                <div class="timer-box"><div class="t-num" id="days">0</div><div class="t-text">يوم</div></div>
+                <div class="timer-box"><div class="t-num" id="hours">0</div><div class="t-text">ساعة</div></div>
+                <div class="timer-box"><div class="t-num" id="minutes">0</div><div class="t-text">دقيقة</div></div>
+                <div class="timer-box"><div class="t-num" id="seconds">0</div><div class="t-text">ثانية</div></div>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="card-icon">🎯</div>
+            <h2 class="card-title" id="card2_title">---</h2>
+            <p style="font-size: 13px; color: #ddd; margin-bottom: 8px;" id="card2_desc">---</p>
+            <div id="gameTimer" style="font-size: 14px; font-weight: bold; color: #ff4d6d; margin-bottom: 5px;">الوقت المتبقي: 7s</div>
+            <div class="game-heart" id="targetHeart" onclick="tapGameHeart()">❤️</div>
+            <div id="gameScore" style="font-size: 13px; color: #ffb3c1; margin-top: 5px;">الضربات: 0 / 15</div>
+            <button class="btn-primary" id="startGameBtn" onclick="startHeartGame()" style="font-size: 13px; padding: 6px; width: 60%; margin: 10px auto 0;">---</button>
+        </div>
+
+        <div class="feature-card">
+            <div class="card-icon">🔮</div>
+            <h2 class="card-title" id="card3_title">---</h2>
+            <p style="font-size: 13px; color: #ddd;" id="lieQuestion">---</p>
+            <div class="fingerprint-btn" id="fingerBtn" onmousedown="startLieDetection()" onmouseup="stopLieDetection()" ontouchstart="startLieDetection()" ontouchend="stopLieDetection()">☝️</div>
+            <div id="lieResult" style="font-size: 14px; font-weight: bold; color: #ffb3c1; min-height: 25px;">---</div>
+        </div>
+
+        <div class="feature-card delay-2">
+            <div class="card-icon">🌡️</div>
+            <h2 class="card-title" id="card4_title">---</h2>
+            <p style="font-size: 13px; color: #ddd;" id="card4_desc">---</p>
+            <div class="love-meter-bg"><div class="love-meter-fill" id="loveFill"></div></div>
+            <div id="loveStatus">العداد: 0%</div>
+            <button class="btn-primary" id="card4_btn" onmousedown="startLoveMeter(event)" onmouseup="stopLoveMeter(event)" onmouseleave="stopLoveMeter(event)" ontouchstart="startLoveMeter(event)" ontouchend="stopLoveMeter(event)">---</button>
+        </div>
+
+        <div class="feature-card">
+            <div class="card-icon">🏦</div>
+            <h2 class="card-title" id="card5_title">---</h2>
+            <p style="font-size: 13px; color: #ddd; margin-bottom: 12px;" id="card5_desc">---</p>
+            <input type="text" class="wish-input" id="wishInputField" placeholder="">
+            <button class="btn-primary" id="card5_btn" onclick="saveWishInVault()" style="font-size:14px; padding:8px 20px;">---</button>
+            <div id="vaultStatusText" style="font-size:13px; color:#ffb3c1; margin-top:8px; font-style:italic;"></div>
+        </div>
+
+        <div class="feature-card">
+            <div class="card-icon">🎡</div>
+            <h2 class="card-title" id="card6_title">---</h2>
+            <p style="font-size: 13px; color: #ddd;" id="card6_desc">---</p>
+            <div style="position:relative; width:190px; height:190px; margin:auto;">
+                <div class="wheel-pointer">👇</div>
+                <div class="wheel-container" id="wheelObj"></div>
+            </div>
+            <button class="btn-primary" id="spinBtn" onclick="spinTheWheel()" style="font-size:14px; padding:8px 20px; width:70%; margin:15px auto 0;">---</button>
+            <div id="wheelResultText" style="font-size:15px; font-weight:bold; color:#fff; margin-top:12px; min-height:25px;"></div>
+        </div>
+
+        <div class="feature-card sos-card">
+            <div class="card-icon">🚨</div>
+            <h2 class="card-title" id="card7_title" style="color: #e01e37;">---</h2>
+            <p style="font-size: 13px; color: #eee; margin-bottom: 10px;" id="card7_desc">---</p>
+            <a id="sosWhatsAppLink" href="#" target="_blank" class="btn-primary btn-sos" style="text-decoration: none; text-align: center; line-height: 25px;">---</a>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // 🌟 لوحة التحكم المطلقة الشاملة (CONFIG) 🌟
+        // غير أي حاجة هنا، والموقع بالكامل هيتغير ديناميكياً!
+        // ==========================================
+        const CONFIG = {
+            // [1] الأسماء الأساسية للبنت والولد
+            boyName: "أحمد",                           // اسمك أنت
+            girlName: "روان",                          // اسم البنت الحالية (غيره لأي بنت تانية هنا بس!)
+
+            // [2] الأمان والبيانات الحساسة
+            password: "107",                     // الرقم السري لدخول الموقع
+            whatsappNum: "201029500910",              // رقم تليفونك بالرمز الدولي (عشان تستقبل الرسائل عليه)
+            anniversaryDate: new Date(2023, 7, 11, 0, 0, 0), // تاريخ البداية (السنة، الشهر ناقص 1، اليوم)
+            audioLink: "https://files.catbox.moe/cbqadb.mp3",                    // رابط أغنية الخلفية
+            passwordHint: "تاريخ مميا.. أوله 1 واخره 7 😉❤️", // تلميح الباسورد لو نسيته
+
+            // [3] التنبيهات والرسائل المنبثقة (Alerts)
+            alertGameWin: "👑 مبروك يا ملكتي! نجحتي في ترويض واكتساح قلب حبيبك المشاكس تماماً وبجدارة!",
+            alertGameLose: "😜 يا خسارة، حبيبك كسب الجولة دي وقلبه فلت منكِ.. حاولي تاني بسرعة وبسرعة أكبر!",
+            alertLieScanning: "⚡ جاري فحص نبضات يد الملكة وتحليل الصدق...",
+            alertLieSuccess: "✅ النتيجة: صادقة 100% وبتعشق حبيبها لآخر نفس في حياتها! 🥰",
+            alertLieCancel: "❌ الفحص اتلغى! شيلي صباعك واضغطي تاني لحد ما العداد يخلص الكشف!",
+            alertWishEmpty: "⚠️ من فضلك اكتبي أمنية حقيقية الأول يا قمر!",
+            alertWishSuccess: "✨ تم تشفير أمنيتكِ وجاري نقلها فوراً لواتساب حبيبك لتحقيقها!",
+            alertLoveMax: "بحبك أكتر من 100% ياروحي! ❤️🔥",
+
+            // [4] نصوص كروت الواجهة (تتغير ديناميكياً بناءً على الأسماء فوق)
+            getSiteTitle() { return `${this.boyName} ❤️ ${this.girlName}`; },
+            getWelcomeMorning() { return `صباح الخير يا أجمل حاجة في يومي 🌸.. مستني الباسورد عشان ننور المكان!`; },
+            getWelcomeAfternoon() { return `نهارنا جميل وسعيد يا روحي ☀️.. يلا أثبتي هويتك بالباسورد!`; },
+            getWelcomeNight() { return `مساء الحب يا قمر حياتي 🌙.. تعالي ندخل عالمنا السري قبل النوم ✨`; },
+            getErrorMsg() { return `أنتي نسيتي الباسورد ولا إيه؟ ركزي شوية! 😡`; },
+            getEmergencyLinkText() { return `استغاثة بـ ${this.boyName}؟ غششني الباسورد 📞`; },
+            
+            getCard1Title() { return `أنتي ملكة قلبي`; },
+            getCard1Desc() { return `كل ثانية بتمر وإنتي معايا بتتحفر في قلبي، وعداد حبنا عمره ما هيقف:`; },
+            
+            getCard2Title() { return `لعبة قلب ${this.boyName}!`; },
+            getCard2Desc() { return `اضغطي على القلب 15 مرة بسرعة البرق قبل ما الوقت يخلص (7 ثواني)! 🏃‍♀️`; },
+            getCard2Btn() { return `ابدئي اللعبة 🎮`; },
+
+            getCard3Title() { return `كاشف الأكاذيب الرومانسي`; },
+            getLieQuestion() { return `سؤال الفحص: هل ${this.boyName} هو أحلى وأجمل حاجة حصلتلك في حياتك كلها؟`; },
+            getLieResultDefault() { return `حطي صباعك هنا باستمرار للإجابة...`; },
+
+            getCard4Title() { return `مقياس الحب`; },
+            getCard4Desc() { return `اضغطي على الزرار باستمرار عشان تملي العداد!`; },
+            getCard4Btn() { return `اضغطي هنا باستمرار 💖`; },
+
+            getCard5Title() { return `حصالة الأمنيات السرية`; },
+            getCard5Desc() { return `نفسك ${this.boyName} يحققهالك إيه المرة الجاية؟ اكتبي أمنيتك هنا وهتوصل لقلبه (واتسابه) على طول 🤫📬`; },
+            getCard5Placeholder() { return `مثلاً: خروجة على البحر أو شيكولاتة كبيرة...`; },
+            getCard5Btn() { return `إرسال الأمنية للحصالة والواتساب 🔐`; },
+
+            getCard6Title() { return `عجلة العقاب والتدليل`; },
+            getCard6Desc() { return `لفّي العجلة وشوفي حظك ونصيبك إيه مع ${this.boyName} النهاردة:`; },
+            getCard6Btn() { return `لفّي العجلة 🎰`; },
+
+            getCard7Title() { return `زر الطوارئ والزعل (SOS)`; },
+            getCard7Desc() { return `لو زعلانة من ${this.boyName} ومش قادرة تتكلمي، اضغطي على الزرار ده عشان نبعتله إنذار إجباري يصالحك حالاً! 🤫⚠️`; },
+            getCard7Btn() { return `إعلان حالة الطوارئ لـ ${this.boyName} 🚨🔥`; },
+
+            // [5] الرسالة الرومانسية الطويلة (تأثير الآلة الكاتبة)
+            getLoveMessage() { 
+                return `إلى ${this.girlName}.. نبض قلبي وحبيبة أيامي.\nكل حاجة في الدنيا دي ممكن تتغير، إلا حبي ليكي.\nأنتي النور اللي نور حياتي، والضحكة اللي بتفرح قلبي.\nعملتلك المكان ده عشان تعرفي غلاوتك عندي.\nبحبك يا أغلى ما أملك... ❤️`; 
+            },
+
+            // [6] خيارات عجلة الحظ (4 خيارات تتغير تلقائياً حسب اسم الولد)
+            getWheelOptions() {
+                return [
+                    `🍔 تطلب دليفري على حساب ${this.boyName} فوراً`,
+                    `🕊️ تسامح ${this.boyName} على أي حاجة زعلتها`,
+                    `👑 تنفذ طلب لـ ${this.boyName} بدون أي نقاش`,
+                    `🤗 ليها حضن دافئ وتدليل لمدة يوم كامل`
+                ];
+            }
+        };
+        // ==========================================
+        // ⛔ نهاية لوحة التحكم - الأكواد بالأسفل أصبحت ديناميكية بالكامل ⛔
+        // ==========================================
+
+        // تطبيق الأكواد الديناميكية عند التحميل
+        document.getElementById('mainTitle').innerText = CONFIG.getSiteTitle();
+        document.getElementById('errorMsg').innerText = CONFIG.getErrorMsg();
+        document.getElementById('emergencyLink').innerText = CONFIG.getEmergencyLinkText();
+        document.getElementById('card1_title').innerText = CONFIG.getCard1Title();
+        document.getElementById('card1_desc').innerText = CONFIG.getCard1Desc();
+        document.getElementById('card2_title').innerText = CONFIG.getCard2Title();
+        document.getElementById('card2_desc').innerText = CONFIG.getCard2Desc();
+        document.getElementById('startGameBtn').innerText = CONFIG.getCard2Btn();
+        document.getElementById('card3_title').innerText = CONFIG.getCard3Title();
+        document.getElementById('lieQuestion').innerText = CONFIG.getLieQuestion();
+        document.getElementById('lieResult').innerText = CONFIG.getLieResultDefault();
+        document.getElementById('card4_title').innerText = CONFIG.getCard4Title();
+        document.getElementById('card4_desc').innerText = CONFIG.getCard4Desc();
+        document.getElementById('card4_btn').innerText = CONFIG.getCard4Btn();
+        document.getElementById('card5_title').innerText = CONFIG.getCard5Title();
+        document.getElementById('card5_desc').innerText = CONFIG.getCard5Desc();
+        document.getElementById('wishInputField').placeholder = CONFIG.getCard5Placeholder();
+        document.getElementById('card5_btn').innerText = CONFIG.getCard5Btn();
+        document.getElementById('card6_title').innerText = CONFIG.getCard6Title();
+        document.getElementById('card6_desc').innerText = CONFIG.getCard6Desc();
+        document.getElementById('spinBtn').innerText = CONFIG.getCard6Btn();
+        document.getElementById('card7_title').innerText = CONFIG.getCard7Title();
+        document.getElementById('card7_desc').innerText = CONFIG.getCard7Desc();
+        document.getElementById('sosWhatsAppLink').innerText = CONFIG.getCard7Btn();
+
+        let typingTimer; let charIndex = 0;
+        let gameActive = false; let gameScore = 0; let gameTimeLeft = 7; let gameCountdown;
+        let lieTimer; let lieProgress = 0; let isSpinning = false;
+
+        document.getElementById('audioSource').src = CONFIG.audioLink;
+        document.getElementById('bgMusic').load();
+        
+        const customMsg = encodeURIComponent(`أنا نسيت الباسورد بتاع عالمنا السري يا ${CONFIG.boyName}.. غششني بسرعة! 🥺❤️`);
+        document.getElementById('emergencyLink').href = `https://wa.me/${CONFIG.whatsappNum}?text=${customMsg}`;
+
+        const sosMsg = encodeURIComponent(`🚨 إعلان حالة الطوارئ! الملكة ${CONFIG.girlName} قفشت وزعلانة منك دلوقتي يا ${CONFIG.boyName}، سيب اللي في إيدك وصالحها فوراً باللي بتحبه! 😡💔`);
+        document.getElementById('sosWhatsAppLink').href = `https://wa.me/${CONFIG.whatsappNum}?text=${sosMsg}`;
+
+        const currentHour = new Date().getHours();
+        const welcomeText = document.getElementById('welcomeTimeMsg');
+        if (currentHour >= 5 && currentHour < 12) {
+            welcomeText.innerText = CONFIG.getWelcomeMorning();
+        } else if (currentHour >= 12 && currentHour < 17) {
+            welcomeText.innerText = CONFIG.getWelcomeAfternoon();
+        } else {
+            welcomeText.innerText = CONFIG.getWelcomeNight();
+        }
+
+        const heartBg = document.getElementById('heartBg');
+        const heartTypes = ['❤️', '💖', '💝', '💕', '🌸'];
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerText = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+            heart.style.setProperty('--left', Math.random() * 100 + 'vw');
+            heart.style.setProperty('--size', Math.random() * 15 + 12 + 'px');
+            heart.style.setProperty('--duration', Math.random() * 4 + 4 + 's');
+            heart.style.setProperty('--opacity', Math.random() * 0.5 + 0.3);
+            heartBg.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 8000);
+        }
+        setInterval(createFloatingHeart, 300);
+
+        function handlePasswordTyping() {
+            const input = document.getElementById('passwordInput');
+            const lockEmoji = document.getElementById('lockEmoji');
+            if(input.value.length > 0) { lockEmoji.innerText = "😍"; } else { lockEmoji.innerText = "🔐"; }
+        }
+
+        function showHint() { alert(CONFIG.passwordHint); }
+
+        function checkPassword() {
+            if(document.getElementById('passwordInput').value === CONFIG.password) {
+                let audio = document.getElementById('bgMusic');
+                audio.play().catch(e => console.log("المتصفح منع التشغيل"));
+                document.getElementById('loginWrapper').style.display = 'none';
+                document.getElementById('messageWrapper').style.display = 'block';
+                typeWriterEffect();
+            } else {
+                const error = document.getElementById('errorMsg');
+                error.style.display = 'block';
+                setTimeout(() => error.style.display = 'none', 3000);
+            }
+        }
+
+        function typeWriterEffect() {
+            const loveMsgText = CONFIG.getLoveMessage();
+            if (charIndex < loveMsgText.length) {
+                let char = loveMsgText.charAt(charIndex);
+                const textContainer = document.getElementById('typingText');
+                textContainer.innerHTML = textContainer.innerHTML.replace('<span class="cursor"></span>', '');
+                if (char === '\n') { textContainer.innerHTML += '<br><br>'; } else { textContainer.innerHTML += char; }
+                textContainer.innerHTML += '<span class="cursor"></span>';
+                charIndex++;
+                typingTimer = setTimeout(typeWriterEffect, 60);
+            } else {
+                document.getElementById('typingText').innerHTML = document.getElementById('typingText').innerHTML.replace('<span class="cursor"></span>', '');
+                const skipBtn = document.getElementById('skipBtn');
+                skipBtn.innerText = "دخول لعالمنا ✨";
+                skipBtn.style.background = "linear-gradient(45deg, #e01e37, #ff4d6d)";
+                skipBtn.style.border = "none";
+                skipBtn.style.boxShadow = "0 5px 20px rgba(255, 77, 109, 0.4)";
+            }
+        }
+
+        function skipToMain() {
+            clearTimeout(typingTimer);
+            document.getElementById('messageWrapper').style.display = 'none';
+            document.body.style.justifyContent = 'flex-start';
+            document.getElementById('mainContent').style.display = 'block';
+            document.querySelectorAll('.feature-card').forEach((card, index) => {
+                setTimeout(() => { card.classList.add('show'); }, index * 200);
+            });
+            startTimer();
+        }
+
+        function startTimer() {
+            setInterval(() => {
+                const diff = new Date() - CONFIG.anniversaryDate;
+                document.getElementById('days').innerText = Math.floor(diff / (1000*60*60*24));
+                document.getElementById('hours').innerText = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+                document.getElementById('minutes').innerText = Math.floor((diff % (1000*60*60)) / (1000*60));
+                document.getElementById('seconds').innerText = Math.floor((diff % (1000*60)) / 1000);
+            }, 1000);
+        }
+
+        function startHeartGame() {
+            if(gameActive) return;
+            gameActive = true; gameScore = 0; gameTimeLeft = 7;
+            document.getElementById('gameScore').innerText = `الضربات: 0 / 15`;
+            document.getElementById('startGameBtn').innerText = "جاري اللعب... 🔥";
+            gameCountdown = setInterval(() => {
+                gameTimeLeft--;
+                document.getElementById('gameTimer').innerText = `الوقت المتبقي: ${gameTimeLeft}s`;
+                if(gameTimeLeft <= 0) {
+                    clearInterval(gameCountdown); gameActive = false;
+                    document.getElementById('startGameBtn').innerText = CONFIG.getCard2Btn();
+                    if(gameScore >= 15) { alert(CONFIG.alertGameWin); }
+                    else { alert(CONFIG.alertGameLose); }
+                }
+            }, 1000);
+        }
+        function tapGameHeart() {
+            if(!gameActive) return;
+            gameScore++;
+            document.getElementById('gameScore').innerText = `الضربات: ${gameScore} / 15`;
+            if(gameScore === 15) { document.getElementById('targetHeart').innerText = "💖🔥"; }
+        }
+
+        function startLieDetection(e) {
+            if(e) e.preventDefault();
+            const btn = document.getElementById('fingerBtn'); const res = document.getElementById('lieResult');
+            btn.classList.add('scanning'); res.innerText = CONFIG.alertLieScanning; res.style.color = "#ffb3c1";
+            lieProgress = 0; clearInterval(lieTimer);
+            lieTimer = setInterval(() => {
+                lieProgress += 10;
+                if(lieProgress >= 100) {
+                    clearInterval(lieTimer); btn.classList.remove('scanning');
+                    res.innerHTML = `✅ <b>النتيجة:</b> ${CONFIG.alertLieSuccess}`;
+                    res.style.color = "#4dff4d";
+                }
+            }, 200);
+        }
+        function stopLieDetection(e) {
+            if(e) e.preventDefault();
+            const btn = document.getElementById('fingerBtn'); const res = document.getElementById('lieResult');
+            if(lieProgress < 100) {
+                clearInterval(lieTimer); btn.classList.remove('scanning');
+                res.innerText = CONFIG.alertLieCancel; res.style.color = "#ff4d4d";
+            }
+        }
+
+        function saveWishInVault() {
+            const input = document.getElementById('wishInputField'); const status = document.getElementById('vaultStatusText');
+            const wishText = input.value.trim();
+            if(wishText === "") { status.innerText = CONFIG.alertWishEmpty; return; }
+            const fullWishMsg = encodeURIComponent(`🏦 أمنية سرية جديدة من حصالة الموقع! ✨\n\nالملكة ${CONFIG.girlName} بتتمنى: (${wishText}) 🥰🎈\n\nيا ${CONFIG.boyName} اجهز وحقق الأمنية دي أول ما تتقابلوا فوراً! 😉🔒`);
+            status.innerHTML = `✨ ${CONFIG.alertWishSuccess}`;
+            setTimeout(() => { window.open(`https://wa.me/${CONFIG.whatsappNum}?text=${fullWishMsg}`, '_blank'); input.value = ""; }, 1000);
+        }
+
+        function spinTheWheel() {
+            if(isSpinning) return;
+            isSpinning = true; document.getElementById('wheelResultText').innerText = "🎰 العجلة بتلف.. استعدي للمفاجأة...";
+            const wheel = document.getElementById('wheelObj'); const randomDegree = Math.floor(Math.random() * 1800) + 360;
+            wheel.style.transform = `rotate(${randomDegree}deg)`;
+            setTimeout(() => {
+                isSpinning = false; const actualDegree = randomDegree % 360; let optionIdx = 0;
+                if(actualDegree >= 0 && actualDegree < 90) optionIdx = 3;
+                else if(actualDegree >= 90 && actualDegree < 180) optionIdx = 2;
+                else if(actualDegree >= 180 && actualDegree < 270) optionIdx = 1;
+                else optionIdx = 0;
+                const options = CONFIG.getWheelOptions();
+                document.getElementById('wheelResultText').innerHTML = `🎁 <b>نصيبك وحظك النهاردة:</b><br>${options[optionIdx]}`;
+            }, 3000);
+        }
+
+        let loveInterval; let loveValue = 0;
+        function startLoveMeter(e) {
+            if(e) e.preventDefault();
+            const fill = document.getElementById('loveFill'); const status = document.getElementById('loveStatus');
+            clearInterval(loveInterval); if(loveValue >= 100) { loveValue = 0; fill.style.boxShadow = "none"; }
+            loveInterval = setInterval(() => {
+                if(loveValue < 100) { loveValue += 2; fill.style.width = loveValue + '%'; status.innerText = `العداد: ${loveValue}%`; }
+                else { status.innerText = CONFIG.alertLoveMax; fill.style.boxShadow = "0 0 20px #ff4d6d"; clearInterval(loveInterval); }
+            }, 50);
+        }
+        function stopLoveMeter(e) { if(e) e.preventDefault(); clearInterval(loveInterval); }
+    </script>
+</body>
+</html>
